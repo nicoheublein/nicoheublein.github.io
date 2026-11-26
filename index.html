@@ -287,6 +287,23 @@ body.n-dialog-open{overflow:hidden}
 .public-details ul+p{margin-top:12px}
 .n-tl .n-small{margin-top:18px}
 .n-projects-note{max-width:820px}
+button.n-pj-act{width:100%;min-height:44px;padding:10px 2px;border:0;border-top:1px solid var(--line);background:none;font:inherit;font-size:15px;font-weight:650;color:var(--accent-ink);text-align:left;cursor:pointer}
+button.n-pj-act:hover{text-decoration:underline;text-underline-offset:3px}
+.n-dialog[open]{display:flex;flex-direction:column;padding:0;overflow:hidden;animation:n-zoom .32s cubic-bezier(.2,.8,.2,1)}
+.n-dialog[open]::backdrop{animation:n-fade .32s ease-out}
+@keyframes n-zoom{from{opacity:0;transform:scale(.5)}}
+@keyframes n-fade{from{opacity:0}}
+.n-dialog-top{align-items:center;padding:16px 18px 12px 36px}
+.n-dialog-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:0 36px 34px}
+.n-dialog .public-figure{margin:0 0 22px;border-radius:14px;overflow:hidden}
+.n-dialog .public-figure img{height:auto;max-height:62vh}
+.n-dialog h2{text-wrap:balance}
+.n-dialog .n-pjb{padding:0}
+.n-dialog .n-tech{font-size:14px;color:var(--muted)}
+.n-dialog .public-details summary{display:none}
+.n-dialog .public-details > div{padding-top:14px}
+.n-dialog .downloads{margin:22px 0 0}
+@media (max-width:600px){.n-dialog-top{padding:12px 12px 10px 20px}.n-dialog-body{padding:0 20px 24px}}
 </style></head><body><a class="n-skip" href="#inhalt">Zum Inhalt</a>
 <header class="n-header"><div class="n-wrap n-header-inner"><a class="n-brand" href="#start"><span aria-hidden="true" class="n-logo">NH</span><span><b>Nico Heublein</b><small>Bewerbungsportfolio IT-Systemelektronik</small></span></a><nav class="n-nav" aria-label="Abschnitte"><a href="#praxis">Praxisphase</a><a href="#lernfelder">Lernfelder</a><a href="#projekte">Projekte</a></nav></div></header>
 <main id="inhalt"><section class="n-hero n-wrap" id="start" aria-labelledby="titel"><div><p class="n-kicker"><span class="n-dot" aria-hidden="true"></span>Suche Praxisbetrieb · ab 14. Juni 2027</p><h1 id="titel">Nico Heublein</h1><p class="n-lead"><strong>In Umschulung zum IT-Systemelektroniker (IHK).</strong> Für das Pflichtpraktikum meiner Umschulung suche ich einen Betrieb, in dem ich Hardware, Linux und Netzwerke im echten Einsatz lerne. Vom Serverbetrieb bis zur Datenrettung zeigen meine Projekte, womit ich mich im Unterricht und zu Hause beschäftige.</p><div class="n-cta"><a class="n-btn n-btn-dark" href="#projekte">Projekte ansehen</a><a class="n-btn n-btn-ghost" href="#praxis">Praxisphase und Termine</a></div><div class="n-facts"><div><b>Gesucht</b>Ein Praxisbetrieb für alle drei Blöcke</div><div><b>Zeitraum</b>14.06.2027 – 26.01.2028</div><div><b>Kontakt</b>Über meine Bewerbungsunterlagen</div></div></div><aside class="n-idcard" aria-label="Kurzprofil"><div class="n-idhead"><span class="n-avatar" aria-hidden="true">NH</span><div><b>Nico Heublein</b><span>In Umschulung zum IT-Systemelektroniker</span></div></div><div class="n-term"><span class="n-p">nh@bewerbung</span>:~$ <span class="n-k">cat lernfelder.txt</span><br>hardware · linux · netzwerke<br>docker · usv · dokumentation<br><span class="n-p">nh@bewerbung</span>:~$ <span class="n-cursor" aria-hidden="true"></span></div><dl class="n-idfacts"><div><dt>Ziel</dt><dd>IT-Systemelektroniker (IHK)</dd></div><div><dt>Praxisphase</dt><dd>3 Blöcke · 114 geplante Arbeitstage</dd></div></dl></aside></section>
@@ -334,4 +351,54 @@ body.n-dialog-open{overflow:hidden}
 </section>
 <section class="n-wrap" id="kontakt" aria-labelledby="kt"><div class="n-contact"><div><p class="n-eyebrow"><span class="n-number">05</span>Kontakt</p><h2 id="kt">Passt eine Praxisphase bei Ihnen?</h2><p>Ob IT-Arbeitsplätze, Hardware, Netzwerke oder technischer Service: Gern kläre ich mit Ihnen, ob meine Praxisphase bei Ihnen möglich ist.</p></div><div class="n-pdf"><span><b>Kontakt über meine Bewerbung</b><span>Meine Kontaktdaten und die vollständigen Unterlagen finden Sie in meiner Bewerbung. Aus Datenschutzgründen stehen sie nicht auf dieser öffentlichen Seite.</span></span></div></div></section>
 </main>
-<footer class="n-footer n-wrap"><span>Nico Heublein · Bewerbungsportfolio IT-Systemelektronik</span><a href="#start">Zum Seitenanfang</a></footer></body></html>
+<footer class="n-footer n-wrap"><span>Nico Heublein · Bewerbungsportfolio IT-Systemelektronik</span><a href="#start">Zum Seitenanfang</a></footer><dialog class="n-dialog project-has-evidence" id="project-dialog" aria-labelledby="project-title">
+<div class="n-dialog-top"><span id="project-kind"></span><form method="dialog"><button class="n-dialog-close" aria-label="Projekt schließen">×</button></form></div>
+<div class="n-dialog-body"><h2 id="project-title"></h2><div id="project-body"></div></div>
+</dialog>
+<script>
+(() => {
+  const dlg = document.getElementById('project-dialog');
+  if (!dlg.showModal) return; // sehr alte Browser: Details bleiben aufklappbar
+  const kind = document.getElementById('project-kind'), title = document.getElementById('project-title');
+  const open = (card, x, y) => {
+    const c = card.cloneNode(true), tag = c.querySelector('.n-tag'), h = c.querySelector('h3');
+    kind.replaceChildren(...(tag ? [tag] : []));
+    title.textContent = h.textContent;
+    h.remove();
+    c.querySelector('.n-pj-act').remove();
+    const d = c.querySelector('details');
+    d.hidden = false;
+    d.open = true;
+    document.getElementById('project-body').replaceChildren(...c.children);
+    // Zoom von der angeklickten Stelle aus (das Fenster selbst steht mittig)
+    dlg.style.transformOrigin = `calc(50% + ${x - innerWidth / 2}px) calc(50% + ${y - innerHeight / 2}px)`;
+    document.body.classList.add('n-dialog-open');
+    dlg.showModal();
+    title.parentNode.scrollTop = 0;
+  };
+  dlg.addEventListener('close', () => document.body.classList.remove('n-dialog-open'));
+  dlg.addEventListener('click', e => { // Klick neben das Fenster schließt es
+    const b = dlg.getBoundingClientRect();
+    if (e.target === dlg && (e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom)) dlg.close();
+  });
+  for (const card of document.querySelectorAll('.n-pj')) {
+    const d = card.querySelector('.public-details');
+    if (!d) continue;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'n-pj-act';
+    btn.setAttribute('aria-haspopup', 'dialog');
+    btn.setAttribute('aria-label', d.querySelector('summary').getAttribute('aria-label'));
+    btn.innerHTML = 'Projektdetails <span aria-hidden="true">↗</span>';
+    d.before(btn);
+    d.hidden = true;
+    card.addEventListener('click', e => { // ganze Karte klickbar; echte Links (Großansicht, PDFs) bleiben Links
+      if (e.target.closest('figcaption a, .downloads a') || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      e.preventDefault();
+      const r = e.target.getBoundingClientRect(); // Tastatur (detail 0): Mitte des Knopfs
+      open(card, e.detail ? e.clientX : r.x + r.width / 2, e.detail ? e.clientY : r.y + r.height / 2);
+    });
+  }
+})();
+</script>
+</body></html>
